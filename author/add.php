@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Add book';
+$pageTitle = 'Add a new book';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Add book</h1>

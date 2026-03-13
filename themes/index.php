@@ -5,11 +5,12 @@ $pdo = getDb();
 $stmt = $pdo->query('SELECT t.id, t.name, t.slug, t.description, COUNT(b.id) AS book_count FROM themes t LEFT JOIN books b ON b.theme_id = t.id GROUP BY t.id ORDER BY t.sort_order, t.name');
 $themes = $stmt->fetchAll();
 
-$pageTitle = 'Themes';
+$pageTitle = 'Themes & courses – Browse books by category';
+$pageDescription = 'Browse our book themes and categories. Find fiction, science, history and more.';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Book themes</h1>
-<p>Browse books by theme (category).</p>
+<p class="page-lead">Browse books by theme (category).</p>
 <div class="themes-list">
   <?php foreach ($themes as $t): ?>
     <a href="<?= base_url('themes/view.php?slug=' . urlencode($t['slug'])) ?>">

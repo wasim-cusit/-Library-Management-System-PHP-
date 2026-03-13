@@ -4,7 +4,8 @@ require_once __DIR__ . '/includes/bootstrap.php';
 $siteName = get_setting('site_name', 'Library');
 $themes = getDb()->query('SELECT id, name, slug, description FROM themes ORDER BY sort_order, name')->fetchAll();
 
-$pageTitle = 'About';
+$pageTitle = 'About ' . $siteName . ' – Digital library, themes & mobile app';
+$pageDescription = 'About ' . $siteName . ': browse books by theme, read online, download when allowed. Web and mobile friendly.';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -55,7 +56,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="about-block">
     <h2>Web & mobile</h2>
-    <p>This website works on desktop and mobile browsers. A <strong>REST API</strong> is available for mobile app developers (iOS/Android) so you can build or use an app that connects to the same library. The API supports login, books, favorites, reviews, and downloads. API endpoints are under <code>/api/v1/</code>; see the project’s <strong>api/API.md</strong> file or the <a href="<?= base_url('api/doc.php') ?>">API documentation</a> for details.</p>
+    <p>This website works on desktop and mobile browsers. A mobile app can connect to the same library; API documentation for developers is available in the <strong>Admin</strong> panel.</p>
   </section>
 
   <p><a href="<?= base_url() ?>" class="btn">Back to home</a></p>

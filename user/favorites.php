@@ -17,7 +17,7 @@ $stmt = $pdo->prepare('
 $stmt->execute([$user['id']]);
 $books = $stmt->fetchAll();
 
-$pageTitle = 'My Favorites';
+$pageTitle = 'My favorites';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>My Favorites</h1>

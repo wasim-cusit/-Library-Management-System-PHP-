@@ -51,6 +51,7 @@ if ($ext === 'txt' && is_file($filePath)) {
 }
 
 $pageTitle = 'Reading: ' . $book['title'];
+$pageRobots = 'noindex, nofollow';
 $isReaderPage = true;
 
 require_once dirname(__DIR__) . '/includes/header.php';

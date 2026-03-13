@@ -14,7 +14,7 @@ $stmt = $pdo->prepare('
 $stmt->execute([$user['id']]);
 $books = $stmt->fetchAll();
 
-$pageTitle = 'My Books';
+$pageTitle = 'My books – Author dashboard';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>My books</h1>

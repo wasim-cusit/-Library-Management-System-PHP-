@@ -18,7 +18,10 @@ $themes = $pdo->query('SELECT t.id, t.name, t.slug, t.description, COUNT(b.id) A
 $siteName = get_setting('site_name', 'Library');
 $siteTagline = get_setting('site_tagline', 'Read, download & discover books');
 
-$pageTitle = 'Home';
+$pageTitle = $siteTagline ?: 'Online library';
+$pageDescription = $siteTagline
+  ? ($siteTagline . ' Browse by theme, read online on web or app, and download books when allowed.')
+  : ('Browse by theme, read online on web or app, and download books when allowed.');
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -68,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="landing-feature">
         <span class="landing-feature-icon">📱</span>
         <h3>Use the app</h3>
-        <p>Use our mobile app (API-ready) and view books that support &quot;View in App&quot;.</p>
+        <p>Use our mobile app and view books that support &quot;View in App&quot;.</p>
       </div>
       <div class="landing-feature">
         <span class="landing-feature-icon">⬇️</span>
@@ -117,7 +120,7 @@ require_once __DIR__ . '/includes/header.php';
         <?php foreach ($books as $b): ?>
           <article class="book-card">
             <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>">
-              <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt=""><?php else: ?><div class="book-cover placeholder"></div><?php endif; ?>
+              <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt="<?= e($b['title']) ?> cover"><?php else: ?><div class="book-cover placeholder" aria-hidden="true"></div><?php endif; ?>
               <div class="info">
                 <h3 class="title"><?= e($b['title']) ?></h3>
                 <p class="meta"><?= e($b['author_name']) ?> · <?= e($b['theme_name']) ?></p>

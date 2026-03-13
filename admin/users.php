@@ -23,6 +23,7 @@ $editId = (int) ($_GET['edit'] ?? 0);
 $users = $pdo->query('SELECT id, username, email, full_name, role, created_at FROM users ORDER BY created_at DESC')->fetchAll();
 
 $pageTitle = 'Manage users';
+$pageRobots = 'noindex, nofollow';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Manage users</h1>

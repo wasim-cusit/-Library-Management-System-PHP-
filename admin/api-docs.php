@@ -5,6 +5,7 @@ require_admin();
 $baseUrl = rtrim(SITE_BASE_URL, '/') . '/api/v1';
 $assetsBase = rtrim(SITE_BASE_URL, '/');
 $pageTitle = 'API docs for developers';
+$pageRobots = 'noindex, nofollow';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <div class="admin-api-docs">

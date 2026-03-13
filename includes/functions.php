@@ -21,6 +21,28 @@ function asset(string $path): string {
     return base_url('assets/' . ltrim($path, '/'));
 }
 
+function current_request_path_and_query(): string {
+    $uri = $_SERVER['REQUEST_URI'] ?? '/';
+    return $uri ?: '/';
+}
+
+function canonical_url(): string {
+    $uri = current_request_path_and_query();
+    $base = BASE_URL;
+
+    // REQUEST_URI is usually like "/Bookslibrary/books/?q=...".
+    // SITE_BASE_URL already includes BASE_URL, so we only append the suffix after BASE_URL.
+    $suffix = $uri;
+    if ($base && str_starts_with($suffix, $base)) {
+        $suffix = substr($suffix, strlen($base));
+    }
+    if ($suffix === false) $suffix = '';
+    if ($suffix === '') $suffix = '/';
+    if ($suffix[0] !== '/') $suffix = '/' . $suffix;
+
+    return rtrim(SITE_BASE_URL, '/') . $suffix;
+}
+
 function slugify(string $s): string {
     $s = preg_replace('/[^a-z0-9]+/i', '-', $s);
     return strtolower(trim($s, '-'));

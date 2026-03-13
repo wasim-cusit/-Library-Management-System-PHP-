@@ -35,7 +35,7 @@ $stmt = $pdo->prepare('SELECT COUNT(*) FROM reviews WHERE user_id = ?');
 $stmt->execute([$user['id']]);
 $stats['reviews'] = (int) $stmt->fetchColumn();
 
-$pageTitle = 'My Profile';
+$pageTitle = 'My profile';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <div class="container">

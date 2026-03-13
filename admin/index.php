@@ -16,7 +16,8 @@ $top_views = $pdo->query('SELECT b.id, b.title, b.view_count FROM books b ORDER 
 $top_downloads = $pdo->query('SELECT b.id, b.title, b.download_count FROM books b ORDER BY b.download_count DESC LIMIT 5')->fetchAll();
 $recent_users = $pdo->query('SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC LIMIT 5')->fetchAll();
 
-$pageTitle = 'Admin Dashboard';
+$pageTitle = 'Admin dashboard';
+$pageRobots = 'noindex, nofollow';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Admin dashboard</h1>

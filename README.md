@@ -8,21 +8,20 @@ A web-based library where users can browse books by **themes**, read online, dow
 - MySQL 5.7+ or MariaDB
 - Apache (XAMPP) or similar
 
-## Setup
+## Quick run (recommended)
 
-1. **Database**
-   - Open phpMyAdmin or MySQL CLI.
-   - Run the SQL script: `sql/schema.sql`
-   - This creates database `bookslibrary`, tables (users, themes, publishers, books, favorites, reviews, reading_history, download_history), and seeds an admin user and sample themes.
-   - Default admin: **email** `admin@library.local`, **password** `password`.
+1. Start **Apache** and **MySQL** (e.g. XAMPP).
+2. Open in browser: **http://localhost/Bookslibrary/setup.php**
+3. Enter MySQL details (default: host `localhost`, user `root`, password empty) and click **Run setup**.
+4. Use the **login credentials** shown after setup to sign in.
 
-2. **Config**
-   - Edit `config/database.php` if needed (host, db name, user, password).
-   - Edit `config/app.php`: set `BASE_URL` to your project URL (e.g. `/Bookslibrary` for XAMPP).
+See **[RUN.md](RUN.md)** for full run instructions and default credentials (Admin, Author, User).
 
-3. **Web**
-   - Place the project under your web root (e.g. `C:\xampp\htdocs\Bookslibrary`).
-   - Ensure `assets/uploads/covers` and `assets/uploads/books` are writable (created automatically if possible).
+## Manual setup
+
+1. **Database**: Run `sql/schema.sql` then `sql/seed.sql` in phpMyAdmin or MySQL CLI.
+2. **Config**: Edit `config/database.php` and `config/app.php` (e.g. `BASE_URL`).
+3. **Web**: Place the project under your web root; ensure `assets/uploads` subdirs are writable.
 
 ## Features
 

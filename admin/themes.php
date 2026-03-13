@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_theme'])) {
 $themes = $pdo->query('SELECT t.*, COUNT(b.id) AS book_count FROM themes t LEFT JOIN books b ON b.theme_id = t.id GROUP BY t.id ORDER BY t.sort_order, t.name')->fetchAll();
 
 $pageTitle = 'Manage themes';
+$pageRobots = 'noindex, nofollow';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Manage themes</h1>

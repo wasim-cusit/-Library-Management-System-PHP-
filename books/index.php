@@ -54,7 +54,8 @@ $books = $stmt->fetchAll();
 $themes = $pdo->query('SELECT id, name, slug FROM themes ORDER BY sort_order, name')->fetchAll();
 $pagination = pagination($total, $page, $perPage, base_url('books/') . '?' . http_build_query(array_filter(['q' => $q, 'category' => $category, 'author' => $author, 'sort' => $sort])));
 
-$pageTitle = 'Books';
+$pageTitle = 'Books – Browse, search & read online';
+$pageDescription = 'Browse and search our book collection by theme and author. Read online or download. Free and paid books.';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Books</h1>
@@ -84,7 +85,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
   <button type="submit" class="btn">Apply</button>
 </form>
 
-<p><?= $total ?> book(s).</p>
+<p class="books-count"><?= $total ?> book<?= $total !== 1 ? 's' : '' ?> found.</p>
 
 <?php if (empty($books)): ?>
   <p>No books found.</p>
@@ -93,7 +94,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
     <?php foreach ($books as $b): ?>
       <article class="book-card">
         <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>">
-          <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt=""><?php else: ?><div class="book-cover placeholder"></div><?php endif; ?>
+          <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt="<?= e($b['title']) ?> cover"><?php else: ?><div class="book-cover placeholder" aria-hidden="true"></div><?php endif; ?>
           <div class="info">
             <h3 class="title"><?= e($b['title']) ?></h3>
             <p class="meta"><?= e($b['author_name']) ?> · <?= e($b['theme_name']) ?> · ★ <?= number_format((float)$b['avg_rating'], 1) ?></p>

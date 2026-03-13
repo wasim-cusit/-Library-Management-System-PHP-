@@ -36,11 +36,12 @@ $stmt->execute([$theme['id']]);
 $books = $stmt->fetchAll();
 $pagination = pagination($total, $page, $perPage, base_url('themes/view.php?slug=' . urlencode($slug)));
 
-$pageTitle = $theme['name'];
+$pageTitle = $theme['name'] . ' – Books';
+$pageDescription = !empty($theme['description']) ? mb_substr($theme['description'], 0, 160) : ('Books in ' . $theme['name']);
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1><?= e($theme['name']) ?></h1>
-<?php if (!empty($theme['description'])): ?><p><?= e($theme['description']) ?></p><?php endif; ?>
+<?php if (!empty($theme['description'])): ?><p class="page-lead"><?= e($theme['description']) ?></p><?php endif; ?>
 <p><?= $total ?> book(s).</p>
 
 <?php if (empty($books)): ?>
@@ -50,7 +51,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
     <?php foreach ($books as $b): ?>
       <article class="book-card">
         <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>">
-          <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt=""><?php else: ?><div class="book-cover placeholder"></div><?php endif; ?>
+          <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt="<?= e($b['title']) ?> cover"><?php else: ?><div class="book-cover placeholder" aria-hidden="true"></div><?php endif; ?>
           <div class="info">
             <h3 class="title"><?= e($b['title']) ?></h3>
             <p class="meta"><?= e($b['author_name']) ?> · ★ <?= number_format((float)$b['avg_rating'], 1) ?></p>

@@ -1,0 +1,8 @@
+# Serve dynamic sitemap and robots so URLs work on any host (local + live).
+# If you deploy at document root (e.g. https://example.com/), set RewriteBase to /
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /Bookslibrary/
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+    RewriteRule ^robots\.txt$ robots.php [L]
+</IfModule>

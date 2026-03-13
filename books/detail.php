@@ -52,6 +52,7 @@ $stmt->execute([$id]);
 $reviews = $stmt->fetchAll();
 
 $pageTitle = $book['title'];
+$pageDescription = mb_substr(strip_tags($book['description'] ?? ''), 0, 160) ?: ($book['title'] . ' – ' . ($book['author_name'] ?: $book['author_username']) . '. ' . ($book['theme_name'] ?? ''));
 require_once dirname(__DIR__) . '/includes/header.php';
 $flashError = $_SESSION['error'] ?? null;
 if (isset($_SESSION['error'])) unset($_SESSION['error']);
@@ -61,9 +62,9 @@ if (isset($_SESSION['error'])) unset($_SESSION['error']);
 <div class="book-detail">
   <div class="cover-col">
     <?php if (!empty($book['cover_url'])): ?>
-      <img class="cover" src="<?= e(COVER_URL . '/' . $book['cover_url']) ?>" alt="">
+      <img class="cover" src="<?= e(COVER_URL . '/' . $book['cover_url']) ?>" alt="<?= e($book['title']) ?> cover">
     <?php else: ?>
-      <div class="book-cover placeholder" style="width:220px;height:330px;"></div>
+      <div class="book-cover placeholder" aria-hidden="true"></div>
     <?php endif; ?>
   </div>
   <div class="info-col">
