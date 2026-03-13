@@ -1,0 +1,32 @@
+# Dependencies
+/vendor/
+node_modules/
+
+# Environment and secrets
+.env
+.env.local
+*.env
+
+# Uploaded files (covers, books, site assets - keep structure, ignore content)
+/assets/uploads/covers/*
+!/assets/uploads/covers/.gitkeep
+/assets/uploads/books/*
+!/assets/uploads/books/.gitkeep
+/assets/uploads/site/*
+!/assets/uploads/site/.gitkeep
+
+# IDE and OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+/tmp/
+/temp/
+
+# PHP
+*.cache
