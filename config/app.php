@@ -2,8 +2,27 @@
 /**
  * Application config: base URL, paths, uploads, etc.
  */
-define('BASE_URL', '/Bookslibrary');
 define('BASE_PATH', dirname(__DIR__));
+// Auto-detect install path (works for localhost + shared hosting + subfolder deploy).
+// Examples:
+// - https://example.com/               => BASE_URL = ''
+// - https://example.com/Bookslibrary/  => BASE_URL = '/Bookslibrary'
+// - https://example.com/some/path/app/ => BASE_URL = '/some/path/app'
+$__docRoot = isset($_SERVER['DOCUMENT_ROOT']) ? realpath((string) $_SERVER['DOCUMENT_ROOT']) : false;
+$__basePath = realpath(BASE_PATH);
+$__baseUrl = '';
+if ($__docRoot && $__basePath) {
+    $__docRootNorm = str_replace('\\', '/', rtrim($__docRoot, '\\/'));
+    $__basePathNorm = str_replace('\\', '/', rtrim($__basePath, '\\/'));
+    if ($__docRootNorm !== '' && str_starts_with($__basePathNorm, $__docRootNorm)) {
+        $__rel = substr($__basePathNorm, strlen($__docRootNorm));
+        $__rel = $__rel === false ? '' : $__rel;
+        $__rel = '/' . ltrim((string) $__rel, '/');
+        if ($__rel === '/') $__rel = '';
+        $__baseUrl = $__rel;
+    }
+}
+define('BASE_URL', $__baseUrl);
 define('SITE_BASE_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . BASE_URL);
 define('UPLOAD_PATH', BASE_PATH . '/assets/uploads');
 define('UPLOAD_COVERS', UPLOAD_PATH . '/covers');

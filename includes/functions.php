@@ -14,6 +14,9 @@ function redirect(string $url, int $code = 302): void {
 
 function base_url(string $path = ''): string {
     $path = ltrim($path, '/');
+    if (BASE_URL === '') {
+        return '/' . $path;
+    }
     return BASE_URL . ($path ? '/' . $path : '');
 }
 
