@@ -53,6 +53,7 @@ $reviews = $stmt->fetchAll();
 
 $pageTitle = $book['title'];
 $pageDescription = mb_substr(strip_tags($book['description'] ?? ''), 0, 160) ?: ($book['title'] . ' – ' . ($book['author_name'] ?: $book['author_username']) . '. ' . ($book['theme_name'] ?? ''));
+$currentNav = 'books';
 require_once dirname(__DIR__) . '/includes/header.php';
 $flashError = $_SESSION['error'] ?? null;
 if (isset($_SESSION['error'])) unset($_SESSION['error']);

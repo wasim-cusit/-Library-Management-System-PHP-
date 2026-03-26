@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Log in';
-$pageDescription = 'Log in to your account to read books, download, and manage favorites.';
+$pageTitle = 'Log in – Read books, download & favorites';
+$pageDescription = 'Log in to read books online, download titles, and manage your favorites. Sign in to access the library.';
 $authLayout = true;
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>

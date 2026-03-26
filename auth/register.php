@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $full_name = trim($_POST['full_name'] ?? '');
-        $register_as_author = !empty($_POST['register_as_author']);
         if (strlen($username) < 2) $error = 'Username must be at least 2 characters.';
         elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $error = 'Invalid email.';
         elseif (strlen($password) < 6) $error = 'Password must be at least 6 characters.';
@@ -27,17 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Email or username already registered.';
             } else {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
-                $role = $register_as_author ? 'author' : 'user';
                 $stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, full_name, role) VALUES (?, ?, ?, ?, ?)');
-                $stmt->execute([$username, $email, $hash, $full_name ?: null, $role]);
+                $stmt->execute([$username, $email, $hash, $full_name ?: null, 'user']);
                 $success = true;
             }
         }
     }
 }
 
-$pageTitle = 'Create account';
-$pageDescription = 'Register for a free account to read books online, download, and save favorites. Authors can publish books.';
+$pageTitle = 'Create account – Read books, download & favorites';
+$pageDescription = 'Create a free account to read books online, download titles, and save favorites. Join the library in minutes.';
 $authLayout = true;
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
@@ -61,7 +59,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
 <div class="auth-card">
     <h1>Register</h1>
     <?php if ($success): ?>
-        <p class="success">Account created. You can now <a href="<?= base_url('auth/login.php') ?>">login</a>. <?= $register_as_author ? 'You are registered as an <strong>Author</strong> and can add books.' : '' ?></p>
+        <p class="success">Account created. You can now <a href="<?= base_url('auth/login.php') ?>">login</a>.</p>
     <?php else: ?>
         <?php if ($error): ?><p class="error"><?= e($error) ?></p><?php endif; ?>
         <form method="post" action="">
@@ -70,7 +68,6 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <label>Email <input type="email" name="email" value="<?= e($_POST['email'] ?? '') ?>" required></label>
             <label>Full name <input type="text" name="full_name" value="<?= e($_POST['full_name'] ?? '') ?>"></label>
             <label>Password <input type="password" name="password" required minlength="6"></label>
-            <label class="checkbox"><input type="checkbox" name="register_as_author" value="1" <?= !empty($_POST['register_as_author']) ? 'checked' : '' ?>> Register as <strong>Author</strong> (can add and manage your own books)</label>
             <button type="submit">Register</button>
         </form>
         <p class="auth-link">

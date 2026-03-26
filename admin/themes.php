@@ -44,6 +44,7 @@ $themes = $pdo->query('SELECT t.*, COUNT(b.id) AS book_count FROM themes t LEFT 
 
 $pageTitle = 'Manage themes';
 $pageRobots = 'noindex, nofollow';
+$currentNav = 'admin';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Manage themes</h1>

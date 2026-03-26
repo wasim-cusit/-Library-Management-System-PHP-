@@ -30,7 +30,13 @@ function api_error(string $message, int $code = 400, ?string $errorCode = null):
 }
 
 function api_get_user(): ?array {
-    $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+    if ($auth === '' && function_exists('getallheaders')) {
+        $headers = getallheaders();
+        if (is_array($headers)) {
+            $auth = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+        }
+    }
     if (!preg_match('/Bearer\s+(\S+)/', $auth, $m)) return null;
     $payload = jwt_decode($m[1]);
     if (!$payload || empty($payload['sub'])) return null;

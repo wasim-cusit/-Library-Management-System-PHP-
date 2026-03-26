@@ -4,33 +4,30 @@
  */
 require_once dirname(__DIR__) . '/config.php';
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    api_error('Method not allowed', 405, 'METHOD_NOT_ALLOWED');
+}
+
 $token = $_GET['token'] ?? '';
 if ($token === '') {
-    header('HTTP/1.1 403 Forbidden');
-    exit;
+    api_error('Missing token', 403, 'MISSING_TOKEN');
 }
 $raw = base64_decode($token, true);
 if ($raw === false) {
-    header('HTTP/1.1 403 Forbidden');
-    exit;
+    api_error('Invalid token', 403, 'INVALID_TOKEN');
 }
 $parts = explode(':', $raw);
 if (count($parts) !== 4) {
-    header('HTTP/1.1 403 Forbidden');
-    exit;
+    api_error('Invalid token payload', 403, 'INVALID_TOKEN');
 }
 $payload = $parts[0] . ':' . $parts[1] . ':' . $parts[2];
 $sig = hash_hmac('sha256', $payload, JWT_SECRET);
 if (!hash_equals($sig, $parts[3])) {
-    header('HTTP/1.1 403 Forbidden');
-    exit;
+    api_error('Invalid token signature', 403, 'INVALID_TOKEN');
 }
 $expires = (int) $parts[2];
 if ($expires < time()) {
-    header('HTTP/1.1 403 Forbidden');
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Link expired']);
-    exit;
+    api_error('Link expired', 403, 'LINK_EXPIRED');
 }
 $userId = (int) $parts[0];
 $bookId = (int) $parts[1];
@@ -40,14 +37,12 @@ $stmt = $pdo->prepare('SELECT id, title, file_url FROM books WHERE id = ?');
 $stmt->execute([$bookId]);
 $book = $stmt->fetch();
 if (!$book || !$book['file_url']) {
-    header('HTTP/1.1 404 Not Found');
-    exit;
+    api_error('Book file not found', 404, 'FILE_NOT_FOUND');
 }
 
 $path = UPLOAD_BOOKS . '/' . $book['file_url'];
 if (!is_file($path)) {
-    header('HTTP/1.1 404 Not Found');
-    exit;
+    api_error('File not found', 404, 'FILE_NOT_FOUND');
 }
 
 $name = preg_replace('/[^a-zA-Z0-9._-]/', '_', $book['title']) . '.' . pathinfo($book['file_url'], PATHINFO_EXTENSION);

@@ -39,7 +39,7 @@ $total = (int) $stmt->fetchColumn();
 $offset = ($page - 1) * $perPage;
 $sql = '
   SELECT b.id, b.title, b.cover_url, b.view_count, b.download_count, b.is_free, b.is_downloadable, b.view_in_web, b.view_in_app,
-         t.name AS theme_name, u.username AS author_name,
+         t.name AS theme_name, t.slug AS theme_slug, u.username AS author_name,
          (SELECT COALESCE(AVG(r.rating), 0) FROM reviews r WHERE r.book_id = b.id) AS avg_rating
   FROM books b
   JOIN themes t ON t.id = b.theme_id
@@ -56,48 +56,58 @@ $pagination = pagination($total, $page, $perPage, base_url('books/') . '?' . htt
 
 $pageTitle = 'Books – Browse, search & read online';
 $pageDescription = 'Browse and search our book collection by theme and author. Read online or download. Free and paid books.';
+$currentNav = 'books';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
-<h1>Books</h1>
-<form method="get" class="toolbar" action="">
-  <input type="hidden" name="category" value="<?= e($category) ?>">
-  <input type="hidden" name="author" value="<?= e($author) ?>">
-  <input type="hidden" name="sort" value="<?= e($sort) ?>">
-  <input type="search" name="q" value="<?= e($q) ?>" placeholder="Search books…">
-  <button type="submit" class="btn">Search</button>
-</form>
-<form method="get" class="toolbar">
-  <input type="hidden" name="q" value="<?= e($q) ?>">
-  <input type="hidden" name="author" value="<?= e($author) ?>">
-  <label>Theme <select name="category">
-    <option value="">All</option>
-    <?php foreach ($themes as $t): ?>
-      <option value="<?= e($t['slug']) ?>" <?= $category === $t['slug'] ? 'selected' : '' ?>><?= e($t['name']) ?></option>
-    <?php endforeach; ?>
-  </select></label>
-  <label>Sort <select name="sort">
-    <option value="-created" <?= $sort === '-created' ? 'selected' : '' ?>>Newest</option>
-    <option value="title" <?= $sort === 'title' ? 'selected' : '' ?>>Title</option>
-    <option value="-views" <?= $sort === '-views' ? 'selected' : '' ?>>Most views</option>
-    <option value="-downloads" <?= $sort === '-downloads' ? 'selected' : '' ?>>Most downloads</option>
-    <option value="-rating" <?= $sort === '-rating' ? 'selected' : '' ?>>Rating</option>
-  </select></label>
-  <button type="submit" class="btn">Apply</button>
-</form>
+<div class="page-content page-books">
+  <div class="page-books-header">
+    <h1>Books</h1>
+    <form method="get" class="toolbar toolbar-search" action="<?= e(base_url('books/')) ?>">
+      <input type="hidden" name="category" value="<?= e($category) ?>">
+      <input type="hidden" name="author" value="<?= e($author) ?>">
+      <input type="hidden" name="sort" value="<?= e($sort) ?>">
+      <input type="search" name="q" value="<?= e($q) ?>" placeholder="Search books…" aria-label="Search books">
+      <button type="submit" class="btn">Search</button>
+    </form>
+    <form method="get" class="toolbar toolbar-filters" action="<?= e(base_url('books/')) ?>">
+      <input type="hidden" name="q" value="<?= e($q) ?>">
+      <input type="hidden" name="author" value="<?= e($author) ?>">
+      <label>Theme
+        <select name="category" aria-label="Filter by theme">
+          <option value="">All</option>
+          <?php foreach ($themes as $t): ?>
+            <option value="<?= e($t['slug']) ?>" <?= $category === $t['slug'] ? 'selected' : '' ?>><?= e($t['name']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+      <label>Sort
+        <select name="sort" aria-label="Sort order">
+          <option value="-created" <?= $sort === '-created' ? 'selected' : '' ?>>Newest</option>
+          <option value="title" <?= $sort === 'title' ? 'selected' : '' ?>>Title</option>
+          <option value="-views" <?= $sort === '-views' ? 'selected' : '' ?>>Most views</option>
+          <option value="-downloads" <?= $sort === '-downloads' ? 'selected' : '' ?>>Most downloads</option>
+          <option value="-rating" <?= $sort === '-rating' ? 'selected' : '' ?>>Rating</option>
+        </select>
+      </label>
+      <button type="submit" class="btn">Apply</button>
+    </form>
+  </div>
 
-<p class="books-count"><?= $total ?> book<?= $total !== 1 ? 's' : '' ?> found.</p>
+  <p class="books-count"><?= $total ?> book<?= $total !== 1 ? 's' : '' ?> found.</p>
 
-<?php if (empty($books)): ?>
-  <p>No books found.</p>
-<?php else: ?>
-  <div class="books-grid">
-    <?php foreach ($books as $b): ?>
+  <?php if (empty($books)): ?>
+    <p>No books found.</p>
+  <?php else: ?>
+    <div class="books-grid">
+    <?php foreach ($books as $b):
+      $themeLabel = !empty($b['theme_name']) ? $b['theme_name'] : 'General';
+    ?>
       <article class="book-card">
-        <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>">
+        <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>" class="book-card-link">
           <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt="<?= e($b['title']) ?> cover"><?php else: ?><div class="book-cover placeholder" aria-hidden="true"></div><?php endif; ?>
           <div class="info">
             <h3 class="title"><?= e($b['title']) ?></h3>
-            <p class="meta"><?= e($b['author_name']) ?> · <?= e($b['theme_name']) ?> · ★ <?= number_format((float)$b['avg_rating'], 1) ?></p>
+            <p class="meta"><?= e($b['author_name']) ?> · <?= e($themeLabel) ?> · ★ <?= number_format((float)$b['avg_rating'], 1) ?></p>
             <div class="book-badges">
               <span class="badge <?= $b['is_free'] ? 'free' : 'paid' ?>"><?= $b['is_free'] ? 'Free' : 'Paid' ?></span>
               <?php if ($b['is_downloadable']): ?><span class="badge downloadable">Download</span><?php endif; ?>
@@ -108,17 +118,18 @@ require_once dirname(__DIR__) . '/includes/header.php';
         </a>
       </article>
     <?php endforeach; ?>
-  </div>
-  <?php if ($pagination['total_pages'] > 1): ?>
-    <div class="pagination">
-      <?php if ($page > 1): ?>
-        <a href="<?= get_pagination_link($pagination['base_url'], $page - 1) ?>">Previous</a>
-      <?php endif; ?>
-      <span class="current"><?= $page ?> / <?= $pagination['total_pages'] ?></span>
-      <?php if ($page < $pagination['total_pages']): ?>
-        <a href="<?= get_pagination_link($pagination['base_url'], $page + 1) ?>">Next</a>
-      <?php endif; ?>
     </div>
+    <?php if ($pagination['total_pages'] > 1): ?>
+      <div class="pagination">
+        <?php if ($page > 1): ?>
+          <a href="<?= get_pagination_link($pagination['base_url'], $page - 1) ?>">Previous</a>
+        <?php endif; ?>
+        <span class="current"><?= $page ?> / <?= $pagination['total_pages'] ?></span>
+        <?php if ($page < $pagination['total_pages']): ?>
+          <a href="<?= get_pagination_link($pagination['base_url'], $page + 1) ?>">Next</a>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
   <?php endif; ?>
-<?php endif; ?>
+</div>
 <?php require_once dirname(__DIR__) . '/includes/footer.php'; ?>

@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Title is required.';
         } elseif ($theme_id < 1) {
             $error = 'Please select a theme.';
+        } elseif (!$is_free && $access_duration === 'custom' && $access_duration_custom < 1) {
+            $error = 'Please enter custom access days (minimum 1 day).';
         } else {
             if ($publisher_new !== '') {
                 $slug = slugify($publisher_new);
@@ -88,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Add a new book';
+$currentNav = 'author';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Add book</h1>
@@ -127,7 +130,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
         <option value="365" <?= ($_POST['access_duration'] ?? '') === '365' ? 'selected' : '' ?>>1 year</option>
         <option value="custom" <?= ($_POST['access_duration'] ?? '') === 'custom' ? 'selected' : '' ?>>Custom days</option>
       </select>
-      <label id="add_custom_days_label" style="display:none;">Days <input type="number" name="access_duration_custom" id="add_access_duration_custom" min="1" max="3650" value="<?= (int)($_POST['access_duration_custom'] ?? 0) ?>"></label>
+      <label id="add_custom_days_label" style="display:none;">Days <input type="number" name="access_duration_custom" id="add_access_duration_custom" min="1" max="3650" value="<?= e($_POST['access_duration_custom'] ?? '') ?>"></label>
     </div>
     <label class="checkbox"><input type="checkbox" name="is_downloadable" value="1" <?= !empty($_POST['is_downloadable']) ? 'checked' : '' ?>> Downloadable</label>
     <label class="checkbox"><input type="checkbox" name="view_in_web" value="1" checked> View on Web</label>
@@ -140,13 +143,37 @@ require_once dirname(__DIR__) . '/includes/header.php';
     var row = document.getElementById('add_access_duration_row');
     var sel = document.getElementById('add_access_duration');
     var customLabel = document.getElementById('add_custom_days_label');
+    var customInput = document.getElementById('add_access_duration_custom');
     function toggle() {
-      row.style.display = isFree && !isFree.checked ? 'block' : 'none';
-      if (!row.style.display || row.style.display === 'none') customLabel.style.display = 'none';
-      customLabel.style.display = sel && sel.value === 'custom' ? 'block' : 'none';
+      var paid = !!(isFree && !isFree.checked);
+      var custom = !!(sel && sel.value === 'custom');
+
+      row.style.display = paid ? 'block' : 'none';
+      customLabel.style.display = paid && custom ? 'block' : 'none';
+
+      if (customInput) {
+        customInput.disabled = !(paid && custom);
+        customInput.required = paid && custom;
+        if (!(paid && custom)) {
+          customInput.value = '';
+          customInput.setCustomValidity('');
+        }
+      }
     }
     if (isFree) isFree.addEventListener('change', toggle);
     if (sel) sel.addEventListener('change', toggle);
+    if (customInput) {
+      customInput.addEventListener('input', function() {
+        customInput.setCustomValidity('');
+      });
+      customInput.addEventListener('invalid', function() {
+        if (customInput.validity.rangeUnderflow || customInput.validity.valueMissing) {
+          customInput.setCustomValidity('Please enter at least 1 day.');
+        } else {
+          customInput.setCustomValidity('');
+        }
+      });
+    }
     toggle();
   })();
   </script>

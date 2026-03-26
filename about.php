@@ -6,6 +6,7 @@ $themes = getDb()->query('SELECT id, name, slug, description FROM themes ORDER B
 
 $pageTitle = 'About ' . $siteName . ' – Digital library, themes & mobile app';
 $pageDescription = 'About ' . $siteName . ': browse books by theme, read online, download when allowed. Web and mobile friendly.';
+$currentNav = 'about';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -56,7 +57,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <section class="about-block">
     <h2>Web & mobile</h2>
-    <p>This website works on desktop and mobile browsers. A mobile app can connect to the same library; API documentation for developers is available in the <strong>Admin</strong> panel.</p>
+    <p>This website works on desktop and mobile browsers. A mobile app can connect to the same library.</p>
   </section>
 
   <p><a href="<?= base_url() ?>" class="btn">Back to home</a></p>

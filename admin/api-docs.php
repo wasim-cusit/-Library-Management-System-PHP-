@@ -6,6 +6,7 @@ $baseUrl = rtrim(SITE_BASE_URL, '/') . '/api/v1';
 $assetsBase = rtrim(SITE_BASE_URL, '/');
 $pageTitle = 'API docs for developers';
 $pageRobots = 'noindex, nofollow';
+$currentNav = 'admin';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <div class="admin-api-docs">
@@ -102,10 +103,17 @@ require_once dirname(__DIR__) . '/includes/header.php';
       <span class="api-method api-method-put">PUT</span>
       <code>/auth/profile.php</code>
       <span class="api-auth-badge">Requires Bearer token</span>
-      <p>Update profile.</p>
+      <p>Update profile. You can also change password in the same request by sending old/new/confirm password fields.</p>
       <p><strong>Request body (JSON):</strong></p>
       <pre class="api-pre">{
   "full_name": "John Doe"
+}</pre>
+      <p><strong>Password change example (JSON):</strong></p>
+      <pre class="api-pre">{
+  "full_name": "John Doe",
+  "old_password": "OldPass123",
+  "new_password": "NewPass123",
+  "confirm_password": "NewPass123"
 }</pre>
     </div>
   </section>

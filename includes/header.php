@@ -4,6 +4,7 @@ $pageDescription = $pageDescription ?? null;
 $pageRobots = $pageRobots ?? null; // e.g. "noindex, nofollow" for private pages
 $pageCanonical = $pageCanonical ?? null;
 $currentUser = current_user();
+$currentNav = $currentNav ?? null; // 'home' | 'about' | 'books' | 'themes' | 'favorites' | 'author' | 'admin' | 'profile'
 $siteName = get_setting('site_name', 'Library');
 $siteLogoUrl = site_logo_url();
 $siteFaviconUrl = site_favicon_url();
@@ -58,19 +59,19 @@ if (!headers_sent()) {
             <span class="nav-toggle-icon"></span>
         </button>
         <nav class="site-nav" id="site-nav">
-            <a href="<?= base_url() ?>">Home</a>
-            <a href="<?= base_url('about.php') ?>">About</a>
-            <a href="<?= base_url('books/') ?>">Books</a>
-            <a href="<?= base_url('themes/') ?>">Themes</a>
+            <a href="<?= base_url() ?>"<?= $currentNav === 'home' ? ' class="active"' : '' ?>>Home</a>
+            <a href="<?= base_url('about.php') ?>"<?= $currentNav === 'about' ? ' class="active"' : '' ?>>About</a>
+            <a href="<?= base_url('books/') ?>"<?= $currentNav === 'books' ? ' class="active"' : '' ?>>Books</a>
+            <a href="<?= base_url('themes/') ?>"<?= $currentNav === 'themes' ? ' class="active"' : '' ?>>Themes</a>
             <?php if ($currentUser): ?>
-                <a href="<?= base_url('user/favorites.php') ?>">Favorites</a>
+                <a href="<?= base_url('user/favorites.php') ?>"<?= $currentNav === 'favorites' ? ' class="active"' : '' ?>>Favorites</a>
                 <?php if (in_array($currentUser['role'], ['author', 'admin'], true)): ?>
-                    <a href="<?= base_url('author/') ?>">My Books</a>
+                    <a href="<?= base_url('author/') ?>"<?= $currentNav === 'author' ? ' class="active"' : '' ?>>My Books</a>
                 <?php endif; ?>
                 <?php if ($currentUser['role'] === 'admin'): ?>
-                    <a href="<?= base_url('admin/') ?>">Admin</a>
+                    <a href="<?= base_url('admin/') ?>"<?= $currentNav === 'admin' ? ' class="active"' : '' ?>>Admin</a>
                 <?php endif; ?>
-                <a href="<?= base_url('auth/profile.php') ?>">Profile</a>
+                <a href="<?= base_url('auth/profile.php') ?>"<?= $currentNav === 'profile' ? ' class="active"' : '' ?>>Profile</a>
                 <a href="<?= base_url('auth/logout.php') ?>">Logout</a>
             <?php else: ?>
                 <a href="<?= base_url('auth/login.php') ?>">Login</a>

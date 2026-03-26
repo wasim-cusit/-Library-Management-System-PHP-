@@ -53,6 +53,7 @@ if ($ext === 'txt' && is_file($filePath)) {
 $pageTitle = 'Reading: ' . $book['title'];
 $pageRobots = 'noindex, nofollow';
 $isReaderPage = true;
+$currentNav = 'books';
 
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>

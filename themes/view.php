@@ -38,6 +38,7 @@ $pagination = pagination($total, $page, $perPage, base_url('themes/view.php?slug
 
 $pageTitle = $theme['name'] . ' – Books';
 $pageDescription = !empty($theme['description']) ? mb_substr($theme['description'], 0, 160) : ('Books in ' . $theme['name']);
+$currentNav = 'themes';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1><?= e($theme['name']) ?></h1>
@@ -50,7 +51,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
   <div class="books-grid">
     <?php foreach ($books as $b): ?>
       <article class="book-card">
-        <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>">
+        <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>" class="book-card-link">
           <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt="<?= e($b['title']) ?> cover"><?php else: ?><div class="book-cover placeholder" aria-hidden="true"></div><?php endif; ?>
           <div class="info">
             <h3 class="title"><?= e($b['title']) ?></h3>

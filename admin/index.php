@@ -18,8 +18,10 @@ $recent_users = $pdo->query('SELECT id, username, email, role, created_at FROM u
 
 $pageTitle = 'Admin dashboard';
 $pageRobots = 'noindex, nofollow';
+$currentNav = 'admin';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
+<div class="page-content page-admin">
 <h1>Admin dashboard</h1>
 <div class="toolbar">
   <a href="<?= base_url('admin/settings.php') ?>" class="btn">Site settings</a>
@@ -73,5 +75,6 @@ require_once dirname(__DIR__) . '/includes/header.php';
     <?php endforeach; ?>
   </tbody>
 </table>
+</div>
 </div>
 <?php require_once dirname(__DIR__) . '/includes/footer.php'; ?>

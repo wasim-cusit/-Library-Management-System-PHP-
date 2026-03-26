@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/bootstrap.php';
 $pdo = getDb();
 $stmt = $pdo->query('
   SELECT b.id, b.title, b.cover_url, b.view_count, b.download_count, b.is_free, b.is_downloadable, b.view_in_web, b.view_in_app,
-         t.name AS theme_name, u.username AS author_name
+         t.name AS theme_name, t.slug AS theme_slug, u.username AS author_name
   FROM books b
   JOIN themes t ON t.id = b.theme_id
   JOIN users u ON u.id = b.author_id
@@ -22,11 +22,18 @@ $pageTitle = $siteTagline ?: 'Online library';
 $pageDescription = $siteTagline
   ? ($siteTagline . ' Browse by theme, read online on web or app, and download books when allowed.')
   : ('Browse by theme, read online on web or app, and download books when allowed.');
+$currentNav = 'home';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Landing: Hero -->
 <section class="landing-hero">
+  <div class="landing-hero-bg" aria-hidden="true">
+    <div class="landing-hero-bg-slide landing-hero-bg-slide-1"></div>
+    <div class="landing-hero-bg-slide landing-hero-bg-slide-2"></div>
+    <div class="landing-hero-bg-slide landing-hero-bg-slide-3"></div>
+  </div>
+  <div class="landing-hero-overlay" aria-hidden="true"></div>
   <div class="landing-hero-inner">
     <h1 class="landing-hero-title"><?= e($siteName) ?></h1>
     <p class="landing-hero-tagline"><?= e($siteTagline) ?></p>
@@ -43,13 +50,12 @@ require_once __DIR__ . '/includes/header.php';
 <section class="landing-section" id="about">
   <div class="landing-section-inner">
     <h2 class="landing-section-title">About this website</h2>
-    <p class="landing-lead"><?= e($siteName) ?> is a digital library where you can discover books by theme, read them online, and download them when permitted. Whether you're a reader or an author, the platform is built for easy browsing and learning.</p>
+    <p class="landing-lead"><?= e($siteName) ?> is a digital library where you can discover books by theme, read them online, and download them when permitted. The platform is built for easy browsing and learning.</p>
     <ul class="landing-about-list">
       <li><strong>Readers</strong> — Search and filter by theme, read online (web or app), download books, add favorites, and leave reviews.</li>
-      <li><strong>Authors</strong> — Register as an author to publish your own books with title, description, theme, publisher, and publish date. Mark books as free or paid, downloadable or view-only, and available on web and/or app.</li>
       <li><strong>Admins</strong> — Manage themes, users, and site settings (including the website logo and app icon).</li>
     </ul>
-    <p><a href="<?= base_url('about.php') ?>" class="btn btn-secondary">Read full about page</a></p>
+    <p class="landing-about-cta"><a href="<?= base_url('about.php') ?>" class="btn btn-secondary">Read full about page</a></p>
   </div>
 </section>
 
@@ -57,7 +63,8 @@ require_once __DIR__ . '/includes/header.php';
 <section class="landing-section landing-section-alt">
   <div class="landing-section-inner">
     <h2 class="landing-section-title">What you can do</h2>
-    <div class="landing-features">
+    <div class="landing-features-slider" data-slider="features">
+      <div class="landing-features" data-slider-track>
       <div class="landing-feature">
         <span class="landing-feature-icon">📚</span>
         <h3>Browse by theme</h3>
@@ -83,6 +90,10 @@ require_once __DIR__ . '/includes/header.php';
         <h3>Favorites & reviews</h3>
         <p>Save favorites and rate books with stars and comments.</p>
       </div>
+      </div>
+      <button type="button" class="slider-btn slider-prev" aria-label="Previous feature" data-slider-prev>‹</button>
+      <button type="button" class="slider-btn slider-next" aria-label="Next feature" data-slider-next>›</button>
+      <div class="slider-dots" aria-label="Feature slider dots" data-slider-dots></div>
     </div>
   </div>
 </section>
@@ -110,20 +121,22 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Recent books -->
-<section class="landing-section landing-section-alt">
+<section class="landing-section landing-section-alt" id="recent-books">
   <div class="landing-section-inner">
     <h2 class="landing-section-title">Recent books</h2>
     <?php if (empty($books)): ?>
-      <p>No books yet. <a href="<?= base_url('auth/register.php') ?>">Register as an author</a> to add books.</p>
+      <p class="landing-empty">No books yet. Please check back later.</p>
     <?php else: ?>
       <div class="books-grid">
-        <?php foreach ($books as $b): ?>
+        <?php foreach ($books as $b):
+          $themeLabel = !empty($b['theme_name']) ? $b['theme_name'] : 'General';
+        ?>
           <article class="book-card">
-            <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>">
+            <a href="<?= base_url('books/detail.php?id=' . $b['id']) ?>" class="book-card-link">
               <?php if (!empty($b['cover_url'])): ?><img class="book-cover" src="<?= e(COVER_URL . '/' . $b['cover_url']) ?>" alt="<?= e($b['title']) ?> cover"><?php else: ?><div class="book-cover placeholder" aria-hidden="true"></div><?php endif; ?>
               <div class="info">
                 <h3 class="title"><?= e($b['title']) ?></h3>
-                <p class="meta"><?= e($b['author_name']) ?> · <?= e($b['theme_name']) ?></p>
+                <p class="meta"><?= e($b['author_name']) ?> · <?= e($themeLabel) ?></p>
                 <div class="book-badges">
                   <span class="badge <?= $b['is_free'] ? 'free' : 'paid' ?>"><?= $b['is_free'] ? 'Free' : 'Paid' ?></span>
                   <?php if ($b['is_downloadable']): ?><span class="badge downloadable">Download</span><?php endif; ?>
@@ -135,7 +148,7 @@ require_once __DIR__ . '/includes/header.php';
           </article>
         <?php endforeach; ?>
       </div>
-      <p><a href="<?= base_url('books/') ?>" class="btn">View all books</a></p>
+      <p class="landing-cta-link"><a href="<?= base_url('books/') ?>" class="btn">View all books</a></p>
     <?php endif; ?>
   </div>
 </section>

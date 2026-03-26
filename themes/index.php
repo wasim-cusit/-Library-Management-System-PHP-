@@ -7,6 +7,7 @@ $themes = $stmt->fetchAll();
 
 $pageTitle = 'Themes & courses – Browse books by category';
 $pageDescription = 'Browse our book themes and categories. Find fiction, science, history and more.';
+$currentNav = 'themes';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Book themes</h1>

@@ -107,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle = 'Edit: ' . $book['title'];
 $pageRobots = 'noindex, nofollow';
+$currentNav = 'author';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Edit book</h1>

@@ -64,6 +64,7 @@ $favicon_url = site_favicon_url();
 
 $pageTitle = 'Site settings';
 $pageRobots = 'noindex, nofollow';
+$currentNav = 'admin';
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 <h1>Site settings</h1>

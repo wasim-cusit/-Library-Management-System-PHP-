@@ -28,7 +28,7 @@ if (!$user || !password_verify($password, $user['password_hash'])) {
 }
 
 unset($user['password_hash']);
-$user['avatar'] = $user['avatar'] ? (rtrim(SITE_BASE_URL, '/') . '/assets/uploads/covers/' . $user['avatar']) : null;
+$user['avatar'] = $user['avatar'] ? (rtrim(SITE_BASE_URL, '/') . '/assets/uploads/' . ltrim($user['avatar'], '/')) : null;
 
 $token = jwt_encode(['sub' => (int) $user['id']]);
 
